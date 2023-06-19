@@ -1,3 +1,16 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+from board.models import Question
 
-# Create your views here.
+def index(request):
+    return render(request, 'board/index.html')
+
+def question_list(request):
+    question_list = Question.objects.all()
+    context ={'question_list':question_list}
+    return render(request, 'board/question_list.html', context)
+
+def detail(request, question_id):
+    question = Question.objects.get(id=question_id)
+    context = {'question': question}
+    return render(request, 'board/detail.html', context)
