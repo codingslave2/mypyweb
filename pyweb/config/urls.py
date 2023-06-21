@@ -4,7 +4,8 @@ from board import views
 
 
 urlpatterns = [
-    path('admin', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('', views.index),
     path('board/', include('board.urls')),
+    path('common/', include('common.urls')),
 ]
