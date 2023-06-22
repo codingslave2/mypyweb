@@ -1,0 +1,11 @@
+<!-- 내용 상속 -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <h1>블로그에 오신걸 환영합니다.</h1>
+    <img src="{% static 'blog/images/guitar.jpg' %}">
+</div>
+
+{% endblock %}

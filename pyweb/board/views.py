@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.utils import timezone
-from board.models import Question
+from board.models import Answer, Question
 from board.forms import QuestionForm, AnswerForm
 from django.contrib.auth.decorators import login_required
 
@@ -13,7 +13,7 @@ def index(request):
 @login_required(login_url='common:login')
 def question_list(request):
     #question_list = Question.objects.all()
-    question_list = Question.objects.order_by('create_date') # 내림차순
+    question_list = Question.objects.order_by('-create_date') # 내림차순
     context ={'question_list':question_list}
     return render(request, 'board/question_list.html', context)
 
@@ -60,6 +60,24 @@ def answer_create(request, question_id):
         context = {'question': question, 'form':form}
     return render(request, 'board/detail.html', context)
 
+# 질문 수정
+@login_required(login_url='common:login')
+def question_modify(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    if request.method == "POST":
+        form = QuestionForm(request.POST, instance=question)
+        if form.is_valid(): # 유효성 검사
+            question = form.save(commit=False) # 가저장
+            question.author = request.user # 작성자
+            question.modify_date = timezone.now() # 수정 날짜
+            question.save()
+            return redirect('board:detail', question_id=question_id)
+    else:
+        form = QuestionForm(instance=question) # 데이터가 이미 있는 폼
+    context = {'form': form}
+    return render(request, 'board/question_form.html', context)
+
+
 # 질문 삭제
 @login_required(login_url='common:login')
 def question_delete(request, question_id):
@@ -67,3 +85,10 @@ def question_delete(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     question.delete()
     return redirect('board:question_list')
+
+#답변 삭제
+@login_required(login_url='common:login')
+def answer_delete(request, answer_id):
+    answer = get_object_or_404(Answer, pk=answer_id)
+    answer.delete()
+    return redirect('board:detail', question_id=answer.question.id)
