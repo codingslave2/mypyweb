@@ -1,14 +1,14 @@
-<!-- 내용 상속 -->
 {% extends 'base.html' %}
+{% block title %}글쓰기 폼입니다.
+{% endblock %}
 {% block content %}
-
-<div class="container">
-        <h3>글쓰기</h3>
-        <form action="" method="post" enctype="multipart/form-data">
+<div class="container my-3">
+<h3>글쓰기</h3>
+<form action="" method="post"
+        enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">저장하기</button>
-        </form>
+</form>
 </div>
-
 {% endblock %}
